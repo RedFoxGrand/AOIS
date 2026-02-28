@@ -7,7 +7,6 @@ PRECISION = 150
 
 
 class BasicFunctions:
-
     @staticmethod
     def create_empty_bits(length: int = LENGTH_OF_BITS) -> list[int]:
         return [0] * length
