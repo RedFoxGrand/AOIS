@@ -1,7 +1,6 @@
 from sources.BasicFunctions import BasicFunctions
 from sources.BinaryConverter import BinaryConverter
 
-
 class BasicArithmeticOperations:
     @staticmethod
     def _add_lists(bits1: list[int], bits2: list[int]) -> list[int]:
