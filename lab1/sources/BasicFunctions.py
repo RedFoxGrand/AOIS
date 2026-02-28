@@ -26,4 +26,3 @@ class BasicFunctions:
         for b in bits:
             val = val * 2 + b
         return val
-    
