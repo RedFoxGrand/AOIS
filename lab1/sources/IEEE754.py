@@ -6,8 +6,6 @@ from sources.BasicFunctions import EXPONENT_BIAS
 from sources.BasicFunctions import PRECISION
 
 
-
-
 class IEEE754:
     @staticmethod
     def _get_components(bits: list[int]) -> tuple[int, int, int]:
