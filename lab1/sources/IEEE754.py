@@ -1,22 +1,31 @@
 from sources.BasicFunctions import BasicFunctions
+from sources.BasicFunctions import LENGTH_OF_BITS
+from sources.BasicFunctions import EXPONENT_LENGTH
+from sources.BasicFunctions import MANTISSA_LENGTH
+from sources.BasicFunctions import EXPONENT_BIAS
+from sources.BasicFunctions import PRECISION
+
+
 
 
 class IEEE754:
     @staticmethod
     def _get_components(bits: list[int]) -> tuple[int, int, int]:
         sign = bits[0]
-        exp = BasicFunctions.bin_to_int(bits[1:9])
-        mantissa_bits = bits[9:]
+        exp = BasicFunctions.bin_to_int(bits[1 : 1 + EXPONENT_LENGTH])
+        mantissa_bits = bits[1 + EXPONENT_LENGTH :]
         if exp == 0:
             mantissa_value = BasicFunctions.bin_to_int(mantissa_bits)
         else:
-            mantissa_value = (1 << 23) + BasicFunctions.bin_to_int(mantissa_bits)
+            mantissa_value = (1 << MANTISSA_LENGTH) + BasicFunctions.bin_to_int(
+                mantissa_bits
+            )
         return sign, exp, mantissa_value
 
     @staticmethod
     def _normalize(sign: int, exp: int, mantissa_value: int) -> list[int]:
         if mantissa_value == 0:
-            return [sign] + BasicFunctions.create_empty_bits(31)
+            return [sign] + BasicFunctions.create_empty_bits(LENGTH_OF_BITS - 1)
 
         temp = mantissa_value
         pos = -1
@@ -24,7 +33,7 @@ class IEEE754:
             temp //= 2
             pos += 1
 
-        shift = 23 - pos
+        shift = MANTISSA_LENGTH - pos
 
         if shift > 0:
             mantissa_value <<= shift
@@ -34,15 +43,23 @@ class IEEE754:
             exp += -shift
 
         if exp <= 0:
-            return [sign] + BasicFunctions.create_empty_bits(31)
-        if exp >= 255:
-            return [sign] + [1] * 8 + BasicFunctions.create_empty_bits(23)
+            return [sign] + BasicFunctions.create_empty_bits(LENGTH_OF_BITS - 1)
+        if exp >= (1 << EXPONENT_LENGTH) - 1:
+            return (
+                [sign]
+                + [1] * EXPONENT_LENGTH
+                + BasicFunctions.create_empty_bits(MANTISSA_LENGTH)
+            )
 
-        mantissa_value = mantissa_value % (1 << 23)
+        mantissa_value = mantissa_value % (1 << MANTISSA_LENGTH)
         result = BasicFunctions.create_empty_bits()
         result[0] = sign
-        result[1:9] = BasicFunctions.int_to_bits(exp, 8)
-        result[9:] = BasicFunctions.int_to_bits(mantissa_value, 23)
+        result[1 : 1 + EXPONENT_LENGTH] = BasicFunctions.int_to_bits(
+            exp, EXPONENT_LENGTH
+        )
+        result[1 + EXPONENT_LENGTH :] = BasicFunctions.int_to_bits(
+            mantissa_value, MANTISSA_LENGTH
+        )
         return result
 
     @staticmethod
@@ -107,7 +124,7 @@ class IEEE754:
             result[0] = sign
             return result
 
-        precision = 150
+        precision = PRECISION
         full_mantissa = int_part << precision
 
         if frac_numerator > 0:
@@ -139,7 +156,9 @@ class IEEE754:
             return BasicFunctions.create_empty_bits()
 
         sign_res = 1 if s1 != s2 else 0
-        return IEEE754._normalize(sign_res, e1 + e2 - 127 - 23, m1 * m2)
+        return IEEE754._normalize(
+            sign_res, e1 + e2 - EXPONENT_BIAS - MANTISSA_LENGTH, m1 * m2
+        )
 
     @staticmethod
     def divide_in_ieee754(input_number1: str, input_number2: str) -> list[int]:
@@ -154,4 +173,6 @@ class IEEE754:
             return BasicFunctions.create_empty_bits()
 
         sign_res = 1 if s1 != s2 else 0
-        return IEEE754._normalize(sign_res, e1 - e2 + 127, (m1 << 23) // m2)
+        return IEEE754._normalize(
+            sign_res, e1 - e2 + EXPONENT_BIAS, (m1 << MANTISSA_LENGTH) // m2
+        )
