@@ -1,6 +1,8 @@
 from sources.BasicFunctions import BasicFunctions
 from sources.BinaryConverter import BinaryConverter
 from sources.BasicArithmeticOperations import BasicArithmeticOperations
+from sources.BasicFunctions import LENGTH_OF_BITS
+from sources.BasicFunctions import LENGTH_OF_INT_PART
 
 
 class AdvancedArithmeticOperations:
@@ -17,12 +19,12 @@ class AdvancedArithmeticOperations:
 
         product = BasicFunctions.create_empty_bits()
 
-        for i in range(31, 0, -1):
+        for i in range(LENGTH_OF_BITS - 1, 0, -1):
             if number2[i] == 1:
-                shift = 31 - i
+                shift = LENGTH_OF_BITS - 1 - i
                 shifted_num1 = BasicFunctions.create_empty_bits()
-                for j in range(32):
-                    if j + shift < 32:
+                for j in range(LENGTH_OF_BITS):
+                    if j + shift < LENGTH_OF_BITS:
                         shifted_num1[j] = number1[j + shift]
 
                 product = BasicArithmeticOperations._add_lists(product, shifted_num1)
@@ -33,7 +35,7 @@ class AdvancedArithmeticOperations:
 
     @staticmethod
     def _is_greater_or_equal(bits1: list[int], bits2: list[int]) -> bool:
-        for i in range(32):
+        for i in range(LENGTH_OF_BITS):
             if bits1[i] == bits2[i]:
                 continue
             return bits1[i] > bits2[i]
@@ -43,7 +45,7 @@ class AdvancedArithmeticOperations:
     def _subtract_lists_positive(bits1: list[int], bits2: list[int]) -> list[int]:
         result = BasicFunctions.create_empty_bits()
         borrow = 0
-        for i in range(31, -1, -1):
+        for i in range(LENGTH_OF_BITS - 1, -1, -1):
             diff = bits1[i] - bits2[i] - borrow
             if diff < 0:
                 diff += 2
@@ -70,10 +72,10 @@ class AdvancedArithmeticOperations:
         quotient_int = BasicFunctions.create_empty_bits()
         remainder = BasicFunctions.create_empty_bits()
 
-        for i in range(1, 32):
-            for j in range(31):
+        for i in range(1, LENGTH_OF_BITS):
+            for j in range(LENGTH_OF_BITS - 1):
                 remainder[j] = remainder[j + 1]
-            remainder[31] = number1[i]
+            remainder[LENGTH_OF_BITS - 1] = number1[i]
 
             if AdvancedArithmeticOperations._is_greater_or_equal(remainder, number2):
                 remainder = AdvancedArithmeticOperations._subtract_lists_positive(
@@ -81,11 +83,11 @@ class AdvancedArithmeticOperations:
                 )
                 quotient_int[i] = 1
 
-        quotient_frac = BasicFunctions.create_empty_bits(16)
-        for i in range(16):
-            for j in range(31):
+        quotient_frac = BasicFunctions.create_empty_bits(LENGTH_OF_INT_PART)
+        for i in range(LENGTH_OF_INT_PART):
+            for j in range(LENGTH_OF_BITS - 1):
                 remainder[j] = remainder[j + 1]
-            remainder[31] = 0
+            remainder[LENGTH_OF_BITS - 1] = 0
 
             if AdvancedArithmeticOperations._is_greater_or_equal(remainder, number2):
                 remainder = AdvancedArithmeticOperations._subtract_lists_positive(
@@ -95,7 +97,9 @@ class AdvancedArithmeticOperations:
 
         final_result = BasicFunctions.create_empty_bits()
         final_result[0] = 1 if sign1 != sign2 else 0
-        final_result[1:16] = quotient_int[17:]
-        final_result[16:] = quotient_frac
+        final_result[1:LENGTH_OF_INT_PART] = quotient_int[
+            LENGTH_OF_BITS - LENGTH_OF_INT_PART + 1 :
+        ]
+        final_result[LENGTH_OF_INT_PART:] = quotient_frac
 
         return final_result
