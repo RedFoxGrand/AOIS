@@ -1,6 +1,10 @@
 from sources.BasicFunctions import BasicFunctions
 from sources.IEEE754 import IEEE754
 from sources.BCD2421 import BCD2421
+from sources.BasicFunctions import LENGTH_OF_BITS
+from sources.BasicFunctions import LENGTH_OF_INT_PART
+from sources.BasicFunctions import EXPONENT_BIAS
+from sources.BasicFunctions import MANTISSA_LENGTH
 
 
 class Verification:
@@ -28,8 +32,8 @@ class Verification:
     @staticmethod
     def sign_magnitude_division_to_decimal(bits: list[int]) -> float:
         sign = bits[0]
-        int_bits = bits[1:16]
-        fract_bits = bits[16:]
+        int_bits = bits[1:LENGTH_OF_INT_PART]
+        fract_bits = bits[LENGTH_OF_INT_PART:]
 
         int_val = BasicFunctions.bin_to_int(int_bits)
 
@@ -47,11 +51,11 @@ class Verification:
         s = -1 if sign == 1 else 1
 
         if exp == 0:
-            e = -126
+            e = 1 - EXPONENT_BIAS
         else:
-            e = exp - 127
+            e = exp - EXPONENT_BIAS
 
-        m = mant_val / (1 << 23)
+        m = mant_val / (1 << MANTISSA_LENGTH)
 
         if e >= 0:
             return s * m * (1 << e)
@@ -65,7 +69,7 @@ class Verification:
             list(bits) if not is_negative else [1 if b == 0 else 0 for b in bits]
         )
         res = 0
-        for i in range(8):
+        for i in range(LENGTH_OF_BITS // 4):
             chunk = current_bits[i * 4 : (i + 1) * 4]
             digit = BCD2421._digit_from_2421_to_decimal(chunk)
             res = res * 10 + digit

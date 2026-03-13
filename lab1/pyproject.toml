@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [project]
 name = "aois-lab1"
 version = "1.0.0"
@@ -31,29 +30,3 @@ source = ["sources"]
 
 [tool.coverage.report]
 show_missing = true
-=======
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "university-system"
-version = "0.1.0"
-description = "Система управления университетом"
-dependencies = []
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["sources*"]
-
-[tool.coverage.run]
-data_file = "tests/.coverage"
-source = ["sources"]
-omit = [
-    "*/handle_functions.py",
-    "*/__init__.py"
-]
-
-[tool.coverage.html]
-directory = "tests/htmlcov"
->>>>>>> 9a1e0cef7af4b8cfb1f6e549c12faf7f7a04111e

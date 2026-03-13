@@ -1,6 +1,14 @@
+LENGTH_OF_BITS = 32
+LENGTH_OF_INT_PART = 16
+EXPONENT_LENGTH = 8
+MANTISSA_LENGTH = 23
+EXPONENT_BIAS = 127
+PRECISION = 150
+
+
 class BasicFunctions:
     @staticmethod
-    def create_empty_bits(length: int = 32) -> list[int]:
+    def create_empty_bits(length: int = LENGTH_OF_BITS) -> list[int]:
         return [0] * length
 
     @staticmethod

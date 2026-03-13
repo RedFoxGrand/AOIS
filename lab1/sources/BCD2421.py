@@ -1,4 +1,5 @@
 from sources.BasicFunctions import BasicFunctions
+from sources.BasicFunctions import LENGTH_OF_BITS
 
 
 class BCD2421:
@@ -27,11 +28,11 @@ class BCD2421:
             for i in input_number:
                 result.extend(BCD2421._digit_from_decimal_to_2421(int(i)))
 
-        padding = 32 - len(result)
-        if padding > 0:
-            result = [sign] * padding + result
+        filling = LENGTH_OF_BITS - len(result)
+        if filling > 0:
+            result = [sign] * filling + result
 
-        return result[-32:]
+        return result[-LENGTH_OF_BITS:]
 
     @staticmethod
     def add_in_bcd_2421(input_number1: str, input_number2: str) -> list[int]:
@@ -41,8 +42,8 @@ class BCD2421:
         result = BasicFunctions.create_empty_bits()
         carry = 0
 
-        for i in range(8):
-            end = 32 - i * 4
+        for i in range(LENGTH_OF_BITS // 4):
+            end = LENGTH_OF_BITS - i * 4
             start = end - 4
 
             d1 = BCD2421._digit_from_2421_to_decimal(bits1[start:end])
@@ -59,8 +60,8 @@ class BCD2421:
             result[start:end] = BCD2421._digit_from_decimal_to_2421(total)
 
         if carry == 1:
-            for i in range(8):
-                end = 32 - i * 4
+            for i in range(LENGTH_OF_BITS // 4):
+                end = LENGTH_OF_BITS - i * 4
                 start = end - 4
 
                 d = BCD2421._digit_from_2421_to_decimal(result[start:end])
@@ -73,7 +74,7 @@ class BCD2421:
                     carry = 0
 
                 result[start:end] = BCD2421._digit_from_decimal_to_2421(d)
-                
+
                 if carry == 0:
                     break
 
