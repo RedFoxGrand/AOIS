@@ -1,0 +1,18 @@
+[project]
+name = "aois-lab-2"
+version = "1.0.0"
+description = "Лабораторная работа по логическим функциям и минимизации"
+authors = [
+    { name = "Student" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    # Здесь можно добавить внешние зависимости, если они понадобятся в будущем (например, pytest)
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.coverage.run]
+source = ["sources"]
