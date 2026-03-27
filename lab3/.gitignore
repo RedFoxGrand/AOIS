@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env
+
+# Distribution / Packaging
+dist/
+build/
+*.egg-info/
+
+# Coverage (отчеты о покрытии тестами)
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Настройки IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
